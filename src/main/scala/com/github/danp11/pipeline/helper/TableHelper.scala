@@ -6,9 +6,7 @@ import org.apache.spark.sql.{Column, SparkSession}
 
 object TableHelper {
 
-  final val invalidRecordsTableName = "invalid_records"
-
-  def createTable(spark: SparkSession, tableName: String, schema: StructType, partitionColumns: List[String], rootPath: String) {
+  def createTable(spark: SparkSession, tableName: String, schema: StructType, partitionColumns: List[String], rootPath: String) = synchronized {
     val fields = getSchemaFieldsForDDL(schema)
     val partitions = partitionColumns.mkString("(", ",", ")")
     val location = createDeltaLocationStr(rootPath, tableName)

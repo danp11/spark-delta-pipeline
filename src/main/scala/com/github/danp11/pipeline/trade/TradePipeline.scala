@@ -1,16 +1,17 @@
-package com.github.danp11.pipeline
+package com.github.danp11.pipeline.trade
 
+import com.github.danp11.pipeline.Pipeline
 import com.github.danp11.pipeline.helper.{ColumnHelper, TableHelper}
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.types.{LongType, StringType, StructField, StructType}
 
 abstract class TradePipeline extends Pipeline {
 
-  override val tableName: String = "trade"
-
   val tableSchema: StructType
 
   val additionalDetailsExpr: Column
+
+  override val tableName: String = "trade"
 
   override val partitionColumns = List("ob_id")
 

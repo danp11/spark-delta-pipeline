@@ -1,7 +1,7 @@
 package com.github.danp11.pipeline
 
+import com.github.danp11.pipeline.conf.SourceSinkConfig
 import com.github.danp11.pipeline.helper.TableHelper
-import com.github.danp11.pipeline.spark.SparkSessionWrapper
 import com.github.mrpowers.spark.daria.sql.DariaValidator
 import com.github.mrpowers.spark.daria.sql.DataFrameExt.DataFrameMethods
 import io.delta.tables.DeltaTable
@@ -33,14 +33,19 @@ trait Pipeline extends SparkSessionWrapper {
 
   def withAdditionalColumns(source: DataFrame): DataFrame = source
 
+  def createInvalidRecordTable() = {
+    TableHelper.createTable(spark, InvalidRecord.tableName, InvalidRecord.schema, InvalidRecord.partitionColumns, SourceSinkConfig.invalidRecordSinkPath)
+  }
+
+  def init():Unit
+
   def validateDF():Unit = {
     val actualDF = spark.createDataFrame(spark.sparkContext.emptyRDD[Row], tableSchema)
     DariaValidator.validateSchema(actualDF, requiredSchema)
   }
 
-  def init():Unit
-
   final def apply() {
+    createInvalidRecordTable()
     init()
     validateDF()
 
@@ -97,7 +102,8 @@ trait Pipeline extends SparkSessionWrapper {
     //Use the batch_id in tables to guarantee exactly-once
 
     insert(source, parsingValidCol, uniqueConditions, tableName)
-    insert(source, parsingInvalidCol, "1 = 1", TableHelper.invalidRecordsTableName)
+    insert(source, parsingInvalidCol, InvalidRecord.uniqueConditions, InvalidRecord.tableName)
+
     source
   }
 

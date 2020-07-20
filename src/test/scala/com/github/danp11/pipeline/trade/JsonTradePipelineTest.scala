@@ -1,14 +1,12 @@
-package com.github.danp11.pipeline.entity.entity_x
+package com.github.danp11.pipeline.trade
 
 import com.github.danp11.pipeline.PipelineTestBase
 import org.apache.spark.sql.DataFrame
 
 
-class EntityXTradePipelineTest extends PipelineTestBase {
+class JsonTradePipelineTest extends PipelineTestBase {
 
-  override val entityPath = "entity_x/"
-
-  override val sut = new EntityXTradePipeline(spark)
+  override val sut = new JsonTradePipeline(spark)
 
   override def verifyValidDF(validDF: DataFrame): Unit = {
     validDF.show(10)

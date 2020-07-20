@@ -1,13 +1,12 @@
-package com.github.danp11.pipeline.entity.entity_x
+package com.github.danp11.pipeline.trade
 
-import com.github.danp11.pipeline.TradePipeline
-import com.github.danp11.pipeline.conf.Settings
+import com.github.danp11.pipeline.conf.SourceSinkConfig
 import com.github.danp11.pipeline.helper.{ColumnHelper, TableHelper}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{LongType, StringType, StructField, StructType}
 import org.apache.spark.sql.{Column, DataFrame, SparkSession}
 
-class EntityXTradePipeline(spark: SparkSession) extends TradePipeline {
+class JsonTradePipeline(spark: SparkSession) extends TradePipeline {
 
   override val additionalDetailsExpr: Column = concat_ws(":", lit("Input File Name"), input_file_name())
 
@@ -42,10 +41,10 @@ class EntityXTradePipeline(spark: SparkSession) extends TradePipeline {
       .format("text")
       .option("maxFilesPerTrigger", 1)
       .option("checkpointLocation", "./tmp/delta_lake_pipeline/entity_x/checkpoint/trade")
-      .load(Settings.rootPath + "entity_x/source/trade")
+      .load(SourceSinkConfig.tradeSourcePath)
   }
 
   override def init(): Unit = {
-    TableHelper.createTable(spark, tableName, tableSchema, partitionColumns,"./tmp/delta_lake_pipeline/entity_x/trade")
+    TableHelper.createTable(spark, tableName, tableSchema, partitionColumns, SourceSinkConfig.tradeSinkPath)
   }
 }

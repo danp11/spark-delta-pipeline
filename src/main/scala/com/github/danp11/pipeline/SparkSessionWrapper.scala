@@ -1,8 +1,8 @@
-package com.github.danp11.pipeline.spark
+package com.github.danp11.pipeline
 
 import org.apache.spark.sql.SparkSession
 
-trait SparkSessionTestWrapper {
+trait SparkSessionWrapper extends Serializable {
 
   lazy val spark: SparkSession = {
     SparkSession

@@ -6,7 +6,7 @@ import org.apache.spark.sql.types.{DataTypes, DecimalType}
 
 object ColumnHelper {
 
-  val decimalType: DecimalType = DataTypes.createDecimalType(32, 9)
+  final val decimalType: DecimalType = DataTypes.createDecimalType(32, 9)
 
   def withTurnover()(df: DataFrame): DataFrame = {
     df.withColumn(
